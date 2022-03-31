@@ -1,9 +1,6 @@
 import axios from 'axios';
 import './App.css';
 import React, { Component } from 'react'
-import Spinner from './components/Spinner'
-import Header from './components/Header'
-import Footer from './components/Footer'
 class App extends Component {
   constructor(props) {
     super(props)
@@ -15,53 +12,55 @@ class App extends Component {
 
   }
   async misDatos() {
-    await axios('https://pruebagcd.herokuapp.com/hoteles')
+     await axios('https://pruebagcd.herokuapp.com/hoteles')
       .then(response => this.setState({ data: response.data }))
       .catch(error => this.setState({ error: error }))
       .finally(() => this.setState({ loading: false }))
   }
   componentDidMount() {
+    this.misDatos()
+    // https:source.unsplash.com/collection/3678981/800*600
     //https://pruebagcd.herokuapp.com/hoteles
     // fetch('https://randomuser.me/api/')
     // .then((res)=>res.json())
     // .then(data=>console.log("datos ",data))
-    // .catch((error)=>{
-    //   this.setState({error:error})
-    // })
+    // .catch((error)=>{this.setState({error:error})})
     // .finally(()=>this.setState({loading:false}))
 
-    axios('https://pruebagcd.herokuapp.com/hoteles')
-      .then(response => this.setState({ data: response.data }))
-      .catch(error => this.setState({ error: error }))
-      .finally(() => this.setState({ loading: false }))
+    // axios('https://pruebagcd.herokuapp.com/hoteles')
+    //   .then(response => this.setState({data:response.data}))
+    //   .catch(error => this.setState({ error: error }))
+    //   .finally(() => {
+    //     setTimeout(()=>{this.setState({ loading: false })},2000)
+    //   })
+
   }
   render() {
     console.log(this.state.loading)
     if (this.state.error) return "Ocurrió un Error";
-    return this.state.loading ? <Spinner /> :
-
-      <div className='container-fluid'>
-        <Header/>
-        <div className='row'>
-          {this.state.data.map((h, i) => { 
-            return <div key={i.toString()} className="col-6">
-              <h2 className='text-center text-danger'>{h.nombre}</h2>
-              <div className='d-flex justify-content-center'>
-              <img style={{ width: "250px" }} 
-              src={"https://pruebagcd.herokuapp.com/" + h.ruta} />
-              <p className='mx-4 p-3 '>{h.info}</p>
-              </div>
-              
-              <p>{h.direccion}</p>
-              <div className='d-flex justify-content-center'>
-              <ul className=''>{h.servicio.map((s,i)=><li key={i.toString()}>{s}</li>)}</ul>
-              </div>
-              
-              
-              </div> })}
-        </div>
-        <Footer />
-        </div>
+    return this.state.loading ? <p>Cargando los datos</p>:
+    <div className='bg-dark text-white container'>
+      <div className='row'>
+      {this.state.data.map((h,i)=>{
+        return(<div key={i.toString()} className='col-12'>
+          <h1>{h.nombre}</h1>
+          <div className='d-flex justify-content-center'>
+          <img alt={h.nombre} className='w-50' src={"https://pruebagcd.herokuapp.com/"+h.ruta} />
+          <p className='mx-5 my-5 '>{h.info}</p>
+          </div>
+          
+          <h3>Servicios:</h3>
+          <ul>
+            {h.servicio.map((s,i)=>{
+              return <li style={{listStyle:"none"}} key={i.toString()}>{s}</li>
+            })}
+          </ul>
+          <p>{h.ubicacion}</p>
+        </div>)
+        
+        })}
+      </div>
+    </div>
   }
 }
 
